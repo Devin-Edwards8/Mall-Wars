@@ -78,7 +78,7 @@ public class MovementControl : MonoBehaviour
         playerRb.velocity = Vector3.zero;
     }
 
-    public void SetIsTouching(bool isT)
+    public void SetMovement(bool isT)
     {
         isTouching = isT;
     }
