@@ -4,23 +4,22 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Vector3 = UnityEngine.Vector3;
 using Vector2 = UnityEngine.Vector2;
 using UnityEngine.InputSystem.EnhancedTouch;
+using Unity.VisualScripting;
 
 public class MovementControl : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private GameObject controlStick;
-    [SerializeField] private GameObject player;
+    [SerializeField] private Player player;
     [SerializeField] private GameObject attackControl;
     [SerializeField] private GameObject leftRef;
     [SerializeField] private GameObject rightRef;
     private Vector3 movementDirection;
     private bool isTouching;
-    private Rigidbody2D playerRb;
     private Camera mainCamera;
     void Start()
     {
         mainCamera = Camera.main;
-        playerRb = player.GetComponent<Rigidbody2D>();
     }
     void OnEnable()
     {
@@ -62,8 +61,11 @@ public class MovementControl : MonoBehaviour
     }
     private void MovePlayer()
     {
-        Vector2 direction2d = (Vector2)movementDirection;
-        playerRb.position += speed * Time.deltaTime * direction2d;
+        // update player values
+        player.Position += speed * Time.deltaTime * movementDirection;
+        float angle = Vector2.Angle(new(0, 1), movementDirection);
+        angle = movementDirection.x > 0 ? -angle : angle;
+        player.MovementDirection = angle;
         
         // update all object positions for camera follow
         Vector3 positionChange = speed * Time.deltaTime * movementDirection;
@@ -75,7 +77,6 @@ public class MovementControl : MonoBehaviour
     private void ZeroControl()
     {
         controlStick.transform.position = transform.position;
-        playerRb.velocity = Vector3.zero;
     }
 
     public void SetMovement(bool isT)
